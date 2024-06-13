@@ -4,8 +4,10 @@ import Breadcrumb from "./Breadcrumb";
 import { faker } from "@faker-js/faker";
 
 const App = () => {
-  const { useFetch } = useCache();
   const path = window.location.pathname.replace(/^\/|\/$/g, "");
+  if (!path) window.location.pathname = "/" + faker.word.sample();
+
+  const { useFetch } = useCache();
   const { data, error, isLoading } = useFetch(path);
 
   if (isLoading && !data) return <div>Loading...</div>;
