@@ -34,7 +34,7 @@ export const CacheProvider = ({ children }) => {
     useEffect(() => {
       const fetchDataAsync = async () => {
         try {
-          if (Array.isArray(cache.current[path]) || !cache.current[path]) {
+          if (!cache.current[path] || Array.isArray(cache.current[path])) {
             const result = await fetchData(path);
             if (Array.isArray(result)) {
               result.forEach((item) => {
@@ -99,7 +99,7 @@ export const CacheProvider = ({ children }) => {
   const useFetchAsync = async (path) => {
     path = normalize(path);
     try {
-      if (!cache.current[path]) {
+      if (!cache.current[path] || Array.isArray(cache.current[path])) {
         const result = await fetchData(path);
         if (Array.isArray(result)) {
           result.forEach((item) => {
@@ -115,16 +115,8 @@ export const CacheProvider = ({ children }) => {
     }
   };
 
-  const useDelete = (path) => {
-    path = normalize(path);
-    delete cache.current[path];
-    saveCacheToSession(cache.current);
-  };
-
   return (
-    <CacheContext.Provider
-      value={{ useFetch, useFetchNames, useFetchAsync, useDelete }}
-    >
+    <CacheContext.Provider value={{ useFetch, useFetchNames, useFetchAsync }}>
       {children}
     </CacheContext.Provider>
   );
